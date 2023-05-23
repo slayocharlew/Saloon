@@ -1,0 +1,273 @@
+#:import sm kivy.uix.screenmanager
+
+
+ScreenManager
+    id:manager
+    transition:sm.FadeTransition(duration=.0)
+    MDScreen:
+        name:'home'
+        md_bg_color: app.to_rgba(255,192,203,.4)
+        FloatLayout:
+            orientation:'vertical'
+            Front:
+                pos_hint:{'center_x':.5, 'center_y':.7}
+                MDIconButton:
+                    icon:"google-maps"
+                    user_font_size:"100sp"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    on_release:
+                        app.screen_capture("")
+
+
+            MDLabel:
+                halign:"center"
+                text:"View Available Saloon"
+                pos_hint:{'center_x':.5, 'center_y':.59}
+
+            Front:
+                pos_hint:{'center_x':.5, 'center_y':.4}
+                MDIconButton:
+                    icon:"calendar-clock-outline"
+                    user_font_size:"100sp"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    on_release:
+                        app.screen_capture("booking")
+
+            MDLabel:
+                halign:"center"
+                text:"Book Saloon"
+                pos_hint:{'center_x':.5, 'center_y':.29}
+
+    MDScreen:
+        name:"booking"
+        MDBoxLayout:
+            orientation: "vertical"
+
+            MDToolbar:
+                title: "Book Saloon"
+                specific_text_color:78/255, 82/255, 84/255, 1
+                md_bg_color:1, 1, 1, 1
+
+            MDTabs:
+                allow_stretch:False
+                background_color:1, 1, 1, 1
+                indicator_color:36/255, 146/255, 255/255, 1
+                tab_hint_x:True
+                text_color_active:78/255, 82/255, 84/255, 1
+                text_color_normal:.5, .5, .5, 1
+
+                Tab:
+                    title: "Schedule"
+                    FloatLayout:
+                        MDDropDownItem:
+                            id: drop_item
+                            pos_hint:{'center_x':.3, 'center_y':.6}
+                            text: 'Select Time'
+                            on_release:
+                                app.time.open()
+                        MDDropDownItem:
+                            id: drop_hair
+                            pos_hint:{'center_x':.7, 'center_y':.6}
+                            text: 'Select Hair style'
+                            on_release:
+                                app.hair_style.open()
+
+                        MDTextField:
+                            id:name
+                            mode: "rectangle"
+                            #fill_color: 0, 0, 0, .4
+                            size_hint: .6, .08
+                            pos_hint:{'center_x':.5, 'center_y':.9}
+                            hint_text:"Name"
+                            #text_color: 1, 1, 1, 1
+                            font_size: dp(15)
+                            on_text:
+                                app.user_name = name.text
+                        NumberOnlyField:
+                            id:phone
+                            mode: "rectangle"
+                            #fill_color: 0, 0, 0, .4
+                            size_hint: .6, .08
+                            pos_hint:{'center_x':.5, 'center_y':.75}
+                            hint_text:"Phone Number"
+                            #text_color: 1, 1, 1, 1
+                            font_size: dp(15)
+                            on_text:
+                                app.user_phone = phone.text
+
+                        Front:
+                            pos_hint:{'center_x':.5, 'center_y':.29}
+                            size:app.size_x/1.1,app.size_y/2.3
+                            md_bg_color: 255/255, 192/255, 203/255, .4
+
+                        MDLabel:
+                            halign:"left"
+                            text:app.user_name
+                            pos_hint:{'center_x':.6, 'center_y':.48}
+                            font_size:"20sp"
+                            theme_text_color: "Custom"
+                            text_color:128/255, 0/255, 0/255, 1
+                        MDLabel:
+                            halign:"left"
+                            text:app.user_phone
+                            pos_hint:{'center_x':.65, 'center_y':.44}
+                            font_size:"15sp"
+                            theme_text_color: "Custom"
+                            text_color:26/255, 54/255, 113/255, 1
+                        MDLabel:
+                            halign:"left"
+                            text:"Time-in"
+                            pos_hint:{'center_x':.65, 'center_y':.37}
+                            font_size:"20sp"
+                            theme_text_color: "Custom"
+                            text_color:128/255, 0/255, 0/255, 1
+                        MDLabel:
+                            halign:"left"
+                            text:"Time-out"
+                            pos_hint:{'center_x':1.18, 'center_y':.37}
+                            font_size:"20sp"
+                            theme_text_color: "Custom"
+                            text_color:128/255, 0/255, 0/255, 1
+
+                        MDLabel:
+                            halign:"left"
+                            text:"Hair style"
+                            pos_hint:{'center_x':.65, 'center_y':.24}
+                            font_size:"20sp"
+                            theme_text_color: "Custom"
+                            text_color:128/255, 0/255, 0/255, 1
+
+                        MDLabel:
+                            halign:"left"
+                            text:app.user_hair
+                            pos_hint:{'center_x':.65, 'center_y':.19}
+                            font_size:"20sp"
+                            theme_text_color: "Custom"
+                            text_color:26/255, 54/255, 113/255, 1
+
+                        MDLabel:
+                            halign:"center"
+                            text:"Price"
+                            pos_hint:{'center_x':.8, 'center_y':.24}
+                            font_size:"20sp"
+                            theme_text_color: "Custom"
+                            text_color:128/255, 0/255, 0/255, 1
+
+                        MDLabel:
+                            halign:"center"
+                            text:app.hair_price+"=\Tsh"
+                            pos_hint:{'center_x':.8, 'center_y':.19}
+                            font_size:"20sp"
+                            theme_text_color: "Custom"
+                            text_color:26/255, 54/255, 113/255, 1
+
+                        MDLabel:
+                            halign:"center"
+                            text:app.time_out
+                            pos_hint:{'center_x':.77, 'center_y':.32}
+                            theme_text_color: "Custom"
+                            text_color:26/255, 54/255, 113/255, 1
+                        MDLabel:
+                            halign:"center"
+                            text:app.attending_time
+                            pos_hint:{'center_x':.23, 'center_y':.32}
+                            theme_text_color: "Custom"
+                            text_color:26/255, 54/255, 113/255, 1
+
+                        MDRaisedButton:
+                            text: "book"
+                            pos_hint:{'center_x': .5, 'center_y': .1}
+                            font_size: "18sp"
+                            md_bg_color: 128/255, 0/255, 0/255, .4
+                            on_release:
+                                app.book_saloon()
+
+                Tab:
+                    title: "My Schedule"
+                    FloatLayout:
+                        RecycleView:
+                            id: order
+                            key_viewclass: 'viewclass'
+                            key_size: 'height'
+                            pos_hint:{"center_x":.5,"top":.97}
+                            RecycleBoxLayout:
+                                id:wali
+                                spacing:dp(10)
+                                padding: dp(10)
+                                default_size: None, dp(200)
+                                default_size_hint: 1, None
+                                size_hint_y: None
+                                height: self.minimum_height
+                                orientation: 'vertical'
+
+<SaloonInfo@MDBoxLayout>:
+    radius:9
+    adaptive_height:True
+    height:dp(200)
+    md_bg_color:214/255, 223/255, 232/255, 1
+    pos_hint:{"center_x":.5,"top":.8}
+    orientation:"vertical"
+    name:""
+    time_in:""
+    time_out:""
+    hair_style:""
+    price:""
+    phone:""
+    status:""
+    FloatLayout:
+        MDLabel:
+            text:root.name
+            halign:"left"
+            font_size:"17sp"
+            theme_text_color: "Custom"
+            text_color:26/255, 54/255, 113/255
+            pos_hint:{"center_x":.55,"center_y":.85}
+        MDLabel:
+            text:root.phone
+            halign:"left"
+            font_size:"16sp"
+            theme_text_color: "Custom"
+            text_color:26/255, 54/255, 113/255, 1
+            pos_hint:{"center_x":.6,"center_y":.7}
+        MDIcon:
+            icon:"dog"
+            pos_hint:{"center_x":.53,"center_y":.5}
+        MDLabel:
+            text:root.hair_style
+            halign:"left"
+            font_size:"20sp"
+            theme_text_color: "Custom"
+            text_color:26/255, 54/255, 113/255, 1
+            pos_hint:{"center_x":.6,"center_y":.5}
+        MDChip:
+            text: root.price
+            icon: ''
+            color: 235/255, 115/255, 115/255, 1
+            pos_hint:{"center_x":.8,"center_y":.85}
+        MDChip:
+            text: root.time_in
+            icon: 'clock-in'
+            color: 235/255, 115/255, 115/255, 1
+            pos_hint:{"center_x":.6,"center_y":.5}
+        MDChip:
+            text: root.time_out
+            icon: 'clock-out'
+            color: 235/255, 115/255, 115/255, 1
+            pos_hint:{"center_x":.86,"center_y":.5}
+        MDRaisedButton:
+            text: root.status
+            size_hint: .3, .2
+            elevation:9
+            #font_size: "29sp"
+            pos_hint:{'center_x':.8, 'center_y':.19}
+            md_bg_color: 26/255, 54/255, 113/255, 1
+
+<Front@MDBoxLayout>:
+    radius:20
+    #height:240
+    size:app.size_x/3,app.size_y/6
+    md_bg_color: 128/255, 0/255, 0/255, .4
+    adaptive_height:True
+    adaptive_width:True
