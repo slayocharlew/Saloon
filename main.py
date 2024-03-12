@@ -1,23 +1,44 @@
 import re
 
 import phonenumbers
-from kivy.properties import NumericProperty, StringProperty
+from kivy.base import EventLoop
+from kivy.clock import mainthread
+from kivy.properties import NumericProperty, StringProperty, Clock, ListProperty
 from kivymd.app import MDApp
 from kivy.core.window import Window
 from kivymd.toast import toast
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.card import MDCard
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.textfield import MDTextField
 from phonenumbers import number_type, carrier
 
+from stations import GoogleStations as GS
+from locations import Location as LC
+from distance import Distance as DS
+from plyer import gps
+
+from kivy_garden.mapview import MapMarker, MapMarkerPopup
+
 from database import FireBase as FB
 
-Window.size = (412, 732)
+
+# Window.size = (412, 732)
 
 
 class Tab(MDBoxLayout, MDTabsBase):
     pass
+
+
+class RowCard(MDCard):
+    icon = StringProperty("")
+    name = StringProperty("")
+
+
+class MapButton(MDRaisedButton):
+    cord = ListProperty([])
 
 
 class NumberOnlyField(MDTextField):
@@ -40,7 +61,7 @@ class NumberOnlyField(MDTextField):
 class MainApp(MDApp):
     size_x, size_y = Window.size
 
-    screens = ['entrance']
+    screens = ['home']
     screens_size = NumericProperty(len(screens) - 1)
     current = StringProperty(screens[len(screens) - 1])
 
@@ -54,14 +75,106 @@ class MainApp(MDApp):
     time_out = StringProperty("")
     price = StringProperty("")
 
+    zoom = NumericProperty(10)
+
+    # Locations
+    address = StringProperty("")
+    distance = StringProperty("")
+    times = StringProperty("")
+
+    # Stations
+    fuel_station = StringProperty("")
+    cord_station = StringProperty("")
+    f_station = ListProperty([])
+    c_station = ListProperty([])
+
+    lat, lon = NumericProperty(-6.8059668), NumericProperty(39.2243981)
+
     time = None
     hair_style = None
 
     def on_start(self):
+        Clock.schedule_once(self.station, .2)
+        self.keyboard_hooker()
         self.drop_it()
         self.drop_hair()
 
         self.notifi()
+
+    def keyboard_hooker(self, *args):
+        EventLoop.window.bind(on_keyboard=self.hook_keyboard)
+
+    def hook_keyboard(self, window, key, *largs):
+        print(self.screens_size)
+        if key == 27 and self.screens_size > 0:
+            print(f"your were in {self.current}")
+            last_screens = self.current
+            self.screens.remove(last_screens)
+            print(self.screens)
+            self.screens_size = len(self.screens) - 1
+            self.current = self.screens[len(self.screens) - 1]
+            self.screen_capture(self.current)
+            return True
+        elif key == 27 and self.screens_size == 0:
+            toast('Press Home button!')
+            return True
+
+    def station(self, *args):
+        self.fetch_location()
+        GS.GetBusStop(GS(), self.address)
+
+    def add_item(self):
+        names = GS.name_stop
+        cor = GS.cord_stop
+        for i in names:
+            pos = names.index(i)
+            self.root.ids.customers.data.append(
+                {
+                    "viewclass": "RowCard",
+                    "icon": "google-maps",
+                    "name": i,
+                    "id": cor[pos]
+                }
+            )
+
+    def fetch_location(self):
+        cordinates = [self.lat, self.lon]
+
+        self.address = LC.get_address(LC(), cordinates)["display_name"]
+
+    def bus_stop_specific(self, data, name):
+        map = self.root.ids.map
+        lat, lon = data.strip().split(",")
+        mark = MapMarkerPopup(lat=lat, lon=lon, source="components/icons/station.png")
+        mark.add_widget(MapButton(text=name, cord=[lat, lon]))
+        map.add_widget(mark)
+        map.center_on(float(lat), float(lon))
+
+    def get_location(self, *args):
+        gps.configure(on_location=self.on_location_update)
+        gps.start()
+
+    def on_location_update(self, **kwargs):
+        lat = kwargs.get('lat')
+        lon = kwargs.get('lon')
+        self.lon = float(lon)
+        self.lat = float(lat)
+        print(f"Latitude: {lat}, Longitude: {lon}")
+        toast(f"Latitude: {lat}, Longitude: {lon}")
+        gps.stop()
+
+    def fetch_address(self, cordinates):
+        address = LC.get_address(LC(), cordinates)["display_name"]
+
+        return address
+
+    @mainthread
+    def get_loc_time(self, cord):
+        cordinates = [self.lat, self.lon]
+        addres1 = self.fetch_address(cord)
+        addres2 = self.fetch_address(cordinates)
+        data = DS.get_distance(DS(), addres2, addres1)
+        self.times, self.distance = str(data[1]), str(data[0])
 
     def to_rgba(self, r, g, b, a):
 

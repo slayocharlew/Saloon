@@ -17,12 +17,14 @@ ScreenManager
                     theme_text_color: "Custom"
                     text_color: 1, 1, 1, 1
                     on_release:
-                        app.screen_capture("")
+                        app.screen_capture("stations")
+                        #app.get_location()
+                        app.add_item()
 
 
             MDLabel:
                 halign:"center"
-                text:"View Available Saloon"
+                text:"Nearby Saloon"
                 pos_hint:{'center_x':.5, 'center_y':.59}
 
             Front:
@@ -202,6 +204,138 @@ ScreenManager
                                 height: self.minimum_height
                                 orientation: 'vertical'
 
+    MDScreen:
+        name:"stations"
+        FloatLayout:
+            Emergency:
+                pos_hint:{"center_x":.5, "center_y":.95}
+                FloatLayout:
+                    MDLabel:
+                        text:"Station nearby"
+                        halign:"center"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        pos_hint:{"center_x":.2, "center_y":.5}
+                        font_size:"20sp"
+            RecycleView:
+                id: customers
+                key_viewclass: 'viewclass'
+                key_size: 'height'
+                pos_hint:{"center_x":.5,"top":.9}
+                RecycleBoxLayout:
+                    id:wali
+                    spacing:dp(10)
+                    padding: dp(10)
+                    default_size: None, dp(55)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+
+    MDScreen:
+        name:"map"
+        MDBoxLayout:
+            orientation:"vertical"
+            MDBoxLayout:
+                MapView:
+                    id:map
+                    #pos_hint:{"center_x":.5, "center_y":.5}
+                    lat: app.lat
+                    lon: app.lon
+                    zoom: app.zoom
+                    MapMarkerPopup:
+                        source:"components/icons/user.png"
+                        lat: app.lat
+                        lon: app.lon
+                        MDRaisedButton:
+                            text:"My Location"
+                            on_release:
+                                app.get_location()
+            MDBoxLayout:
+                size:dp(50),dp(50)
+                adaptive_height:True
+                pos_hint:{"top":.9}
+                MDIconButton:
+                    icon:"plus"
+                    pos_hint:{"center_x":.4,"center_y":.5}
+                    on_release:
+                        app.zoom = app.zoom + 2
+                MDLabel:
+                    text:str(app.zoom)
+                    font_name: 'components/fonts/Gill Sans.otf'
+                    font_size: "18sp"
+                    halign:"center"
+                    pos_hint:{"center_x":.5,"center_y":.5}
+                MDIconButton:
+                    icon:"minus"
+                    pos_hint:{"center_x":.7,"center_y":.5}
+                    on_release:
+                        app.zoom = app.zoom - 2
+
+    MDScreen:
+        name:"Fuel_station"
+        md_bg_color:242/255, 186/255, 133/255, .3
+        FloatLayout:
+            Emergency:
+                pos_hint:{"center_x":.5, "center_y":.95}
+                FloatLayout:
+                    MDLabel:
+                        text:"Fuel Station"
+                        halign:"center"
+                        pos_hint:{"center_x":.2, "center_y":.5}
+                        font_size:"20sp"
+            MDLabel:
+                text:app.fuel_station
+                halign:"left"
+                font_size:"30sp"
+                padding:25, 0
+                pos_hint:{"center_y":.8}
+                theme_text_color: "Custom"
+                text_color:75/255, 123/255, 146/255
+            MDLabel:
+                text:"distance is"+" "+app.distance+"km"
+                halign:"center"
+                pos_hint:{"center_y":.73, "center_x":.2}
+            MDLabel:
+                text:"it will take"+" "+app.times
+                halign:"center"
+                pos_hint:{"center_y":.68, "center_x":.26}
+            MDLabel:
+                text:"Petroleum"
+                halign:"center"
+                font_size:"25sp"
+                pos_hint:{"center_y":.6, "center_x":.23}
+                theme_text_color: "Custom"
+                text_color:75/255, 123/255, 146/255
+            MDLabel:
+                text:"2,300"
+                halign:"center"
+                font_size:"21sp"
+                pos_hint:{"center_y":.56, "center_x":.23}
+            MDLabel:
+                text:"Diesel"
+                halign:"center"
+                font_size:"25sp"
+                pos_hint:{"center_y":.6, "center_x":.7}
+                theme_text_color: "Custom"
+                text_color:75/255, 123/255, 146/255
+            MDLabel:
+                text:"2,300"
+                halign:"center"
+                font_size:"21sp"
+                pos_hint:{"center_y":.56, "center_x":.7}
+            MDFillRoundFlatIconButton:
+                icon: "phone"
+                text: "call"
+                md_bg_color:75/255, 123/255, 146/255, 1
+                pos_hint:{"center_y":.32, "center_x":.48}
+                on_release:
+                    app.call()
+                    app.f_station.append(app.fuel_station)
+                    app.c_station.append(app.cord_station)
+
+
+
 <SaloonInfo@MDBoxLayout>:
     radius:9
     adaptive_height:True
@@ -232,7 +366,7 @@ ScreenManager
             text_color:26/255, 54/255, 113/255, 1
             pos_hint:{"center_x":.6,"center_y":.7}
         MDIcon:
-            icon:"dog"
+            icon:"face-woman"
             pos_hint:{"center_x":.53,"center_y":.5}
         MDLabel:
             text:root.hair_style
@@ -271,3 +405,58 @@ ScreenManager
     md_bg_color: 128/255, 0/255, 0/255, .4
     adaptive_height:True
     adaptive_width:True
+
+<Emergency@MDBoxLayout>:
+    radius:9
+    adaptive_height:True
+    name:""
+    icon:""
+    phone:""
+    call:"phone"
+    fsize: "20"
+    isize: "40sp"
+    pos_x: .27
+    pos_y: .64
+    height:dp(75)
+    md_bg_color:75/255, 123/255, 146/255, 1
+    #pos_hint:{"center_x":.5,"top":.8}
+    orientation:"vertical"
+
+<RowCard>:
+    #orientation: "vertical"
+    radius:9
+    pos_x: .27
+    pos_y: .64
+    height:dp(65)
+    md_bg_color:214/255, 223/255, 232/255, .5
+    #pos_hint:{"center_x":.5,"top":.8}
+    orientation:"vertical"
+    on_release:
+        print(self.id)
+        app.bus_stop_specific(self.id, root.name)
+        app.screen_capture("map")
+    FloatLayout:
+        MDIcon:
+            icon:root.icon
+            badge_icon:"cat"
+            font_size:"30sp"
+            theme_text_color:"Custom"
+            text_color: 242/255, 186/255, 133/255, 1
+            pos_hint:{"center_x":.5,"center_y":.5}
+
+        MDLabel:
+            text:root.name
+            font_size:"18sp"
+            #halign:"center"
+            pos_hint:{"center_x":.6,"center_y":.5}
+            theme_text_color: "Custom"
+            text_color: 75/255, 123/255, 146/255, 1
+
+<MapButton>:
+    on_release:
+        print(self.text, root.cord)
+        app.fuel_station = self.text
+        print(root.cord)
+        app.cord_station = str(self.cord)
+        app.screen_capture("Fuel_station")
+        app.get_loc_time(root.cord)

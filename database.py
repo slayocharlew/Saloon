@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from kivymd.toast import toast
+
 
 class FireBase:
 
@@ -65,6 +67,7 @@ class FireBase:
                         "status": "pending"
                     }
                 )
+                toast("Booking Sent")
 
     def tweak_time(self, time):
         new_time = []
@@ -89,5 +92,6 @@ class FireBase:
 
         return f"{m}_{d}"
 
-x = FireBase.fetch_request(FireBase(), "0788204327")
-print(x)
+
+# x = FireBase.fetch_request(FireBase(), "0788204327")
+# print(x)
