@@ -24,7 +24,7 @@ class GoogleStations:
         (lat, lng) = map(geocode[0]['geometry']['location'].get, ('lat', 'lng'))
 
         # Saloon
-        search_string = 'Gas station'
+        search_string = 'Saloon'
         distance = self.miles_to_meters(2)
         business_list = []
 
@@ -48,7 +48,7 @@ class GoogleStations:
             business_list.extend(response.get('results'))
             next_page_token = response.get('next_page_token')
 
-        for i in range(10):
+        for i in range(6):
             self.name_stop.append(business_list[i]["name"])
             cord = f'{business_list[i]["geometry"]["location"]["lat"]},{business_list[i]["geometry"]["location"]["lng"]}'.strip()
             self.cord_stop.append(cord)

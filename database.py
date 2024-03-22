@@ -16,7 +16,6 @@ class FireBase:
                 ref = db.reference('Saloon').child("Eva_beauty").child("Info").child(self.year()).child(
                     self.month_date())
                 data = ref.get()
-
                 return self.tweak_time(data["available_time"])
 
     def get_hairstyle(self):

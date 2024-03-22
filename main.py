@@ -1,6 +1,7 @@
 import re
 
 import phonenumbers
+from kivy import utils
 from kivy.base import EventLoop
 from kivy.clock import mainthread
 from kivy.properties import NumericProperty, StringProperty, Clock, ListProperty
@@ -24,9 +25,13 @@ from kivy_garden.mapview import MapMarker, MapMarkerPopup
 
 from database import FireBase as FB
 
+Window.keyboard_anim_args = {"d": .2, "t": "linear"}
+Window.softinput_mode = "below_target"
+Clock.max_iteration = 250
 
-# Window.size = (412, 732)
-
+if utils.platform != 'android':
+    # Window.size = (412, 732)
+    pass
 
 class Tab(MDBoxLayout, MDTabsBase):
     pass
@@ -85,8 +90,6 @@ class MainApp(MDApp):
     # Stations
     fuel_station = StringProperty("")
     cord_station = StringProperty("")
-    f_station = ListProperty([])
-    c_station = ListProperty([])
 
     lat, lon = NumericProperty(-6.8059668), NumericProperty(39.2243981)
 
@@ -145,7 +148,7 @@ class MainApp(MDApp):
     def bus_stop_specific(self, data, name):
         map = self.root.ids.map
         lat, lon = data.strip().split(",")
-        mark = MapMarkerPopup(lat=lat, lon=lon, source="components/icons/station.png")
+        mark = MapMarkerPopup(lat=lat, lon=lon, source="components/icons/3790422.png")
         mark.add_widget(MapButton(text=name, cord=[lat, lon]))
         map.add_widget(mark)
         map.center_on(float(lat), float(lon))
