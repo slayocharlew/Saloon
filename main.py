@@ -1,5 +1,6 @@
 import re
 
+import kivy
 import phonenumbers
 from kivy import utils
 from kivy.base import EventLoop
@@ -15,6 +16,7 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.textfield import MDTextField
 from phonenumbers import number_type, carrier
+import ssl
 
 from stations import GoogleStations as GS
 from locations import Location as LC
@@ -29,8 +31,10 @@ Window.keyboard_anim_args = {"d": .2, "t": "linear"}
 Window.softinput_mode = "below_target"
 Clock.max_iteration = 250
 
+ssl._create_default_https_context = ssl._create_unverified_context
+
 if utils.platform != 'android':
-    # Window.size = (412, 732)
+    #Window.size = (412, 732)
     pass
 
 class Tab(MDBoxLayout, MDTabsBase):
@@ -98,6 +102,8 @@ class MainApp(MDApp):
 
     def on_start(self):
         Clock.schedule_once(self.station, .2)
+        if kivy.utils.platform == 'android':
+            self.request_android_permissions()
         self.keyboard_hooker()
         self.drop_it()
         self.drop_hair()
@@ -106,6 +112,18 @@ class MainApp(MDApp):
 
     def keyboard_hooker(self, *args):
         EventLoop.window.bind(on_keyboard=self.hook_keyboard)
+
+    def request_android_permissions(self):
+        from android.permissions import request_permissions, Permission
+
+        def callback(permissions, results):
+            if all([res for res in results]):
+                print("callback. All permissions granted.")
+            else:
+                print("callback. Some permissions refused.")
+
+        request_permissions([Permission.ACCESS_COARSE_LOCATION,
+                             Permission.ACCESS_FINE_LOCATION, Permission.CALL_PHONE], callback)
 
     def hook_keyboard(self, window, key, *largs):
         print(self.screens_size)
