@@ -6,7 +6,7 @@ ScreenManager
     transition:sm.FadeTransition(duration=.0)
     MDScreen:
         name:'home'
-        md_bg_color: app.to_rgba(255,192,203,.4)
+        md_bg_color: app.to_rgba(255,192,203,.4) #pink
         FloatLayout:
             orientation:'vertical'
             Front:
@@ -75,6 +75,7 @@ ScreenManager
                             text: 'Select Hair style'
                             on_release:
                                 app.hair_style.open()
+
 
                         MDTextField:
                             id:name
@@ -307,7 +308,7 @@ ScreenManager
                 pos_hint:{"center_y":.46, "center_x":.23}
 
             AsyncImage:
-                source:"components/icons/eva.jpg"
+                source:"components/icons/in.jpg"
                 size_hint: None, None
                 size: "150dp", "150dp"
                 pos_hint:{"center_y":.46, "center_x":.7}

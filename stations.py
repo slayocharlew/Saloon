@@ -16,7 +16,7 @@ class GoogleStations:
         except:
             return 0
 
-    def GetBusStop(self, address):
+    def SaloonPoint(self, address):
         print(address)
 
         # address = address  # 'Gamex, Makutano Road, Jitegemee, Mabibo, Ubungo Municipal, Dar es Salaam, Coastal Zone, 21493, Tanzania'

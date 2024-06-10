@@ -31,11 +31,16 @@ Window.keyboard_anim_args = {"d": .2, "t": "linear"}
 Window.softinput_mode = "below_target"
 Clock.max_iteration = 250
 
-ssl._create_default_https_context = ssl._create_unverified_context
+import certifi
+import geopy.geocoders
+
+ctx = ssl.create_default_context(cafile=certifi.where())
+geopy.geocoders.options.default_ssl_context = ctx
 
 if utils.platform != 'android':
-    #Window.size = (412, 732)
     pass
+    #Window.size = (412, 732)
+
 
 class Tab(MDBoxLayout, MDTabsBase):
     pass
@@ -142,7 +147,7 @@ class MainApp(MDApp):
 
     def station(self, *args):
         self.fetch_location()
-        GS.GetBusStop(GS(), self.address)
+        GS.SaloonPoint(GS(), self.address)
 
     def add_item(self):
         names = GS.name_stop
